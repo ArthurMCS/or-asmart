@@ -58,9 +58,9 @@ function MobileNavbar() {
 }
 
 const items = [
-  { label: 'Dashboard', link: '/' },
-  { label: 'Transactions', link: '/transactions' },
-  { label: 'Manage', link: '/manage' }
+  { label: 'Início', link: '/' },
+  { label: 'Movimentações', link: '/transactions' },
+  { label: 'Gerenciamento', link: '/manage' }
 ];
 
 function DesktopNavbar() {
