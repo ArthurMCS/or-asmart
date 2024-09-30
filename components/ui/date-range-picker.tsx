@@ -17,6 +17,8 @@ import {
 import { Switch } from './switch'
 import { ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils'
+import { ptBR } from 'date-fns/locale'
+import { DateInput } from './date-input'
 
 export interface DateRangePickerProps {
   /** Click handler for applying the updates from DateRangePicker. */
@@ -37,7 +39,7 @@ export interface DateRangePickerProps {
   showCompare?: boolean
 }
 
-const formatDate = (date: Date, locale: string = 'en-us'): string => {
+const formatDate = (date: Date, locale: string = 'pt-BR'): string => {
   return date.toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
@@ -406,7 +408,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                     <Label htmlFor="compare-mode">Compare</Label>
                   </div>
                 )}
-                {/* <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
                     <DateInput
                       value={range.from}
@@ -475,7 +477,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
                       />
                     </div>
                   )}
-                </div> */}
+                </div>
               </div>
               { isSmallScreen && (
                 <Select defaultValue={selectedPreset} onValueChange={(value) => { setPreset(value) }}>
@@ -494,6 +496,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               <div>
                 <Calendar
                   mode="range"
+                  locale={ptBR}
                   onSelect={(value: { from?: Date, to?: Date } | undefined) => {
                     if (value?.from != null) {
                       setRange({ from: value.from, to: value?.to })

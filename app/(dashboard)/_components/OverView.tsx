@@ -6,6 +6,7 @@ import { differenceInDays, startOfMonth } from 'date-fns';
 import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { MAX_DATE_RANGE_DAYS } from '@/lib/constants';
 import { toast } from 'sonner';
+import StatsCards from './StatsCards';
 
 function OverView({ userSettings }: { userSettings: UserSettings}) {
   const [dateRange, setDateRange] = useState<{ from: Date, to: Date}>({
@@ -14,8 +15,8 @@ function OverView({ userSettings }: { userSettings: UserSettings}) {
   })
   return (
     <>
-        <div className='flex flex-wrap item-end justify-between gap-6 py-8 px-8'>
-              <h2 className='text-3xl font-bold'>Visão geral</h2> 
+        <div className='flex flex-wrap item-end justify-end gap-6 py-8 px-8'>
+              {/* <h2 className='text-3xl font-bold'>Resumo</h2>  */}
               <div className='flex items-center gap-3'>
                 <DateRangePicker 
                     initialDateFrom={dateRange.from}
@@ -35,6 +36,13 @@ function OverView({ userSettings }: { userSettings: UserSettings}) {
                     }}
                 />
               </div>
+        </div>
+        <div className='flex w-full flex-col gap-2 px-4'>
+            <StatsCards
+                userSettings={userSettings}
+                from={dateRange.from}
+                to={dateRange.to}
+            />
         </div>
     </>
   )
