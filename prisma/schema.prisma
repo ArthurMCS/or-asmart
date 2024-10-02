@@ -53,12 +53,17 @@ model Transaction {
   updatedAt DateTime @default(now())
   updatedBy String
 
-  amount      Float
-  description String
-  date        DateTime
-  numerator   Int
-  denominator Int
-  type        String   @default("income")
+  name         String
+  amount       Float
+  description  String
+  purchaseDate DateTime
+  paymentDate  DateTime
+  numerator    Int
+  denominator  Int
+  type         String   @default("income")
+
+  card         String
+  bank         String
 
   categoryId String
   category   Category          @relation(fields: [categoryId], references: [id])

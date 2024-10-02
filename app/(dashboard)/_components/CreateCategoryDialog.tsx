@@ -12,7 +12,7 @@ import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
-import { category } from '@prisma/client';
+import { Category } from '@prisma/client';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CreateCategory } from '../_actions/categories';
@@ -21,7 +21,7 @@ import pt from '@emoji-mart/data/i18n/pt.json';
 
 interface Props {
     type: TransactionType;
-    successCallback: (category: category) => void
+    successCallback: (category: Category) => void
 }
 
 function CreateCategoryDialog({ type, successCallback }: Props) {
@@ -38,7 +38,7 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
   
   const { mutate, isPending } = useMutation({
     mutationFn: CreateCategory,
-    onSuccess: async (data: category) => {
+    onSuccess: async (data: Category) => {
         form.reset({
             icon: '',
             name: '',
