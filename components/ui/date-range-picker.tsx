@@ -185,10 +185,12 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         to.setHours(23, 59, 59, 999)
         break
       case 'thisMonth':
-        from.setDate(1)
-        from.setHours(0, 0, 0, 0)
-        to.setHours(23, 59, 59, 999)
-        break
+        from.setDate(1);
+        from.setHours(0, 0, 0, 0);
+        to.setMonth(to.getMonth() + 1);
+        to.setDate(0);
+        to.setHours(23, 59, 59, 999);
+        break;
       case 'lastMonth':
         from.setMonth(from.getMonth() - 1)
         from.setDate(1)

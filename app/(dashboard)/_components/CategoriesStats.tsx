@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DateToUTCDate, GetFormatterForCurrency } from '@/lib/helpers';
 import { TransactionType } from '@/lib/types';
-import { UserSettings, category } from '@prisma/client';
+import { UserSettings } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import React, { useMemo } from 'react'
 
@@ -61,7 +61,7 @@ function CategoriesCard({ data, type, formatter }: {
         <Card className='h-80 w-full cil-span-6'>
             <CardHeader>
                 <CardTitle className='grid grid-flow-row justify-between gap-2 text-muted-foreground md:grid-flow-col'>
-                    {type === 'income' ? 'ganhos por categoria' : 'Gastos por categoria'}
+                    {type === 'income' ? 'Ganhos por categoria' : 'Gastos por categoria'}
                 </CardTitle>
             </CardHeader>
 

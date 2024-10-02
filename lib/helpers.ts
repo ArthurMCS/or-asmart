@@ -13,10 +13,12 @@ export function DateToUTCDate(date: Date) {
 }
 
 export function GetFormatterForCurrency(currency: string) {
-    const locale = Currencies.find((c) => c.value === currency)?.local
+    const locale = Currencies.find((c) => c.value === currency)?.local;
 
     return new Intl.NumberFormat(locale, {
         style: "currency",
-        currency
-    })
+        currency,
+        minimumFractionDigits: 2,  // Número mínimo de casas decimais
+        maximumFractionDigits: 2   // Número máximo de casas decimais
+    });
 }
