@@ -23,7 +23,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType){
 
     const categoryRow = await prisma.category.findFirst({
         where: {
-            userId: user.id,
+            // TODO: passar categoria id
+            createdBy: user.id,
             name: category
         }
     })
@@ -36,13 +37,13 @@ export async function CreateTransaction(form: CreateTransactionSchemaType){
     await prisma.$transaction([
         prisma.transaction.create({
             data: {
-                userId: user.id,
+                createdBy: user.id,
+                updatedBy: user.id,
                 amount,
                 date,
                 description: description || '',
                 type,
-                category: categoryRow.name,
-                categoryIcon: categoryRow.icon,
+                categoryId: categoryRow.id
             }
         }),
 

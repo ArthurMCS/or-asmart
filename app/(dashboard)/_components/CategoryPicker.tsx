@@ -4,7 +4,7 @@
 import React, { useCallback, useEffect } from 'react'
 import { TransactionType } from "@/lib/types"
 import { useQuery } from '@tanstack/react-query';
-import { category } from '@prisma/client';
+import { Category } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import CreateCategoryDialog from './CreateCategoryDialog';
@@ -32,9 +32,9 @@ function CategoryPicker({ type, onChange }: Props) {
     queryFn: () => fetch(`/api/categories?type=${type}`).then((res) => res.json())
   })
   
-  const selectedCategory = categoriesQuery.data?.find((category: category) => category.name === value)
+  const selectedCategory = categoriesQuery.data?.find((category: Category) => category.name === value)
 
-  const onSuccessCallback = useCallback((category: category) => {
+  const onSuccessCallback = useCallback((category: Category) => {
         setValue(category.name)
         setOpen((prev) => !prev)
   }, [])
@@ -63,7 +63,7 @@ function CategoryPicker({ type, onChange }: Props) {
                 <CommandGroup>
                     <CommandList>
                         {
-                            categoriesQuery.data && categoriesQuery.data.map((c: category) => (
+                            categoriesQuery.data && categoriesQuery.data.map((c: Category) => (
                                 <CommandItem 
                                     key={c.name}
                                     onSelect={() => {
@@ -87,7 +87,7 @@ function CategoryPicker({ type, onChange }: Props) {
 }
 
 
-function CategoryRow({ category }: { category: category }){
+function CategoryRow({ category }: { category: Category }){
     return (
         <div className='flex items-center gap-2'>
             <span role="img">{category.icon}</span>

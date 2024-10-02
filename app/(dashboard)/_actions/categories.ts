@@ -22,7 +22,8 @@ export async function CreateCategory(form: CreateCategorySchemaType){
 
     return await prisma.category.create({
         data: {
-            userId: user.id,
+            createdBy: user.id,
+            updatedBy: user.id,
             name,
             icon,
             type

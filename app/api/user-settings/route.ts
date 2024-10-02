@@ -12,15 +12,18 @@ export async function GET(){
 
     let userSettings = await prisma.userSettings.findUnique({
         where: {
-            userId: user.id,
+            id: user.id,
         }
     })
 
     if(!userSettings) {
         userSettings = await prisma.userSettings.create({
             data: {
-                userId: user.id,
+                id: user.id, 
+                name: user.fullName ?? "UserNoName",
+                email: user.emailAddresses[0].emailAddress,                
                 currency: 'BRL',
+                isAdmin: false
             }
         })
     }

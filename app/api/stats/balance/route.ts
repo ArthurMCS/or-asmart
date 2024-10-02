@@ -39,7 +39,7 @@ async function getBalanceStats(userId: string, from: Date, to: Date) {
     const totals = await prisma.transaction.groupBy({
         by: ['type'],
         where: {
-            userId,
+            createdBy: userId,
             date: {
                 gte: from,
                 lte: to,
