@@ -94,7 +94,7 @@ function NavbarItem({ link, label, clickCallback }: {
   clickCallback?: () => void
 }) {
   const pathname = usePathname();
-  const isActive = pathname.startsWith(link); // Usa startsWith para melhor flexibilidade com rotas
+  const isActive = pathname === link;
 
   return (
     <div className='relative flex items-center'>
