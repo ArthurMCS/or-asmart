@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { UserSettings } from '@prisma/client';
-import { differenceInDays, startOfMonth } from 'date-fns';
+import { differenceInDays, startOfMonth, endOfMonth } from 'date-fns';
 import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { MAX_DATE_RANGE_DAYS } from '@/lib/constants';
 import { toast } from 'sonner';
@@ -12,7 +12,7 @@ import CategoriesStats from './CategoriesStats';
 function OverView({ userSettings }: { userSettings: UserSettings}) {
   const [dateRange, setDateRange] = useState<{ from: Date, to: Date}>({
     from: startOfMonth(new Date()),
-    to: new Date(),
+    to: endOfMonth(new Date()),
   })
   return (
     <>

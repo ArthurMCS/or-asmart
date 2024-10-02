@@ -164,7 +164,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
         onChange={handleInputChange('day')}
         onKeyDown={handleKeyDown('day')}
         onBlur={handleBlur('day')}
-        className="p-0 outline-none w-7 border-none text-center"
+        className="p-0 outline-none w-7 border-none text-center bg-transparent"
         placeholder="D"
       />
       <span className="opacity-20 -mx-px">/</span>
@@ -177,7 +177,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
         onChange={handleInputChange('month')}
         onKeyDown={handleKeyDown('month')}
         onBlur={handleBlur('month')}
-        className="p-0 outline-none w-6 border-none text-center"
+        className="p-0 outline-none w-6 border-none text-center bg-transparent"
         placeholder="M"
       />
       <span className="opacity-20 -mx-px">/</span>
@@ -190,7 +190,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
         onChange={handleInputChange('year')}
         onKeyDown={handleKeyDown('year')}
         onBlur={handleBlur('year')}
-        className="p-0 outline-none w-12 border-none text-center"
+        className="p-0 outline-none w-12 border-none text-center bg-transparent"
         placeholder="YYYY"
       />
     </div>
