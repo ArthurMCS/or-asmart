@@ -28,10 +28,16 @@ CREATE TABLE "Transaction" (
     "createdBy" TEXT NOT NULL,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedBy" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "amount" REAL NOT NULL,
-    "description" TEXT NOT NULL,
-    "date" DATETIME NOT NULL,
+    "description" TEXT,
+    "purchaseDate" DATETIME,
+    "paymentDate" DATETIME NOT NULL,
+    "numerator" INTEGER NOT NULL DEFAULT 1,
+    "denominator" INTEGER NOT NULL DEFAULT 1,
     "type" TEXT NOT NULL DEFAULT 'income',
+    "card" TEXT,
+    "bank" TEXT,
     "categoryId" TEXT NOT NULL,
     CONSTRAINT "Transaction_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Transaction_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "UserSettings" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -39,13 +45,20 @@ CREATE TABLE "Transaction" (
 );
 
 -- CreateTable
-CREATE TABLE "TransactionUser" (
-    "userId" TEXT NOT NULL,
+CREATE TABLE "TransactionResponsible" (
+    "responsibleId" TEXT NOT NULL,
     "transactionId" TEXT NOT NULL,
 
-    PRIMARY KEY ("userId", "transactionId"),
-    CONSTRAINT "TransactionUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserSettings" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "TransactionUser_transactionId_fkey" FOREIGN KEY ("transactionId") REFERENCES "Transaction" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    PRIMARY KEY ("responsibleId", "transactionId"),
+    CONSTRAINT "TransactionResponsible_responsibleId_fkey" FOREIGN KEY ("responsibleId") REFERENCES "Responsible" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "TransactionResponsible_transactionId_fkey" FOREIGN KEY ("transactionId") REFERENCES "Transaction" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Responsible" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "color" TEXT NOT NULL
 );
 
 -- CreateTable
