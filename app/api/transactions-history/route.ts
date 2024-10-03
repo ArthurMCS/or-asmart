@@ -36,7 +36,7 @@ export type GettRansactionHistoryResponseType = Awaited<ReturnType<typeof getTra
 async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
     const userSettings = await prisma.userSettings.findUnique({
         where: {
-            userId,
+            id: userId,
         }
     })
 
@@ -49,7 +49,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
 
     const transactions = await prisma.transaction.findMany({
         where: {
-            userId,
+            createdBy: userId,
             date: {
                 gte: from,
                 lte: to,

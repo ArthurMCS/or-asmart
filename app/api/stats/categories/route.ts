@@ -36,9 +36,9 @@ export type GetCategoryStatsResponseType = Awaited<ReturnType<typeof getCategory
 
 async function getCategoryStats(userId: string, from: Date, to: Date) {
     const stats = await prisma.transaction.groupBy({
-        by: ['type', 'category', 'categoryIcon'],
+        by: ['type', 'categoryId'],
         where: {
-            userId,
+            createdBy: userId,
             date: {
                 gte: from,
                 lte: to,
@@ -54,5 +54,25 @@ async function getCategoryStats(userId: string, from: Date, to: Date) {
         }
     })
 
-    return stats
+    const categoryIds = stats.map(stat => stat.categoryId);
+    const categories = await prisma.category.findMany({
+        where: {
+            id: {
+                in: categoryIds,
+            },
+        },
+    });
+
+    // Crie um mapa para fácil acesso às categorias
+    const categoryMap = Object.fromEntries(categories.map(category => [category.id, category]));
+
+    // Combine os resultados do groupBy com os detalhes da categoria
+    const detailedStats = stats.map(stat => ({
+        type: stat.type,
+        categoryId: stat.categoryId,
+        totalAmount: stat._sum.amount,
+        category: categoryMap[stat.categoryId], // Adiciona a categoria completa
+    }));
+
+    return detailedStats
 }

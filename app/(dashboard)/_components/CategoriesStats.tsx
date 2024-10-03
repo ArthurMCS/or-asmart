@@ -79,14 +79,14 @@ function CategoriesCard({ data, type, formatter }: {
                     <ScrollArea className='h-60 w-full px-4'>
                         <div className='flex w-full flex-col gap-4 p-4'>
                             {filteredData.map((item => {
-                                const amount = item._sum.amount || 0;
+                                const amount = item.totalAmount || 0;
                                 const percentage = (amount * 100) / (total || amount)
 
                                 return (
-                                    <div key={item.category} className='flex flex-col gap-2'>
+                                    <div key={item.categoryId} className='flex flex-col gap-2'>
                                         <div className='flex items-center text-gray-400'>
                                             <span className='flex items-center text-gray-400'>
-                                                {item.categoryIcon} {item.category}
+                                                {item.category.icon} {item.category.name}
                                                 <span className='ml-2 mr-2 text-xs text-muted-foreground'>
                                                     ({percentage.toFixed(0)}%)
                                                 </span>

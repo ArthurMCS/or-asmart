@@ -1,6 +1,6 @@
 "use client"
 import React, { ReactNode } from 'react';
-import { category } from '@prisma/client';
+import { Category } from '@prisma/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { DeleteCategory } from '../_actions/categories';
 import { toast } from 'sonner';
@@ -11,7 +11,7 @@ import { TransactionType } from '@/lib/types';
 
 interface Props {
     trigger: ReactNode
-    category: category
+    category: Category
 }
 
 function DeleteCategoryDialog({ trigger, category }: Props) {
