@@ -122,13 +122,13 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                                     <Input defaultValue={0} type="number" {...field}/>
                                 </FormControl>
                                 <FormDescription>
-                                    Descrição da movimentação (opcional)
+                                    Valor do {type === 'income' ? 'renda' : 'gasto'}
                                 </FormDescription>
                             </FormItem>
                         )}
                     />
 
-                    Tipo: {form.watch('category')}    
+                    {/* Tipo: {form.watch('category')}     */}
 
                     <div className="flex items-center justify-between gap-2">
                         <FormField 

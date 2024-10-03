@@ -31,7 +31,7 @@ function DeleteCategoryDialog({ trigger, category }: Props) {
         },
 
         onError: () => {
-            toast.success("Error ao excluir categoria", {
+            toast.error("Error ao excluir categoria", {
                 id: categoryIdentifier
             })
         }

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@clerk/localizations": "^3.0.6",
@@ -50,6 +51,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+    "export-to-csv": "^1.4.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.446.0",
     "next": "14.2.13",
