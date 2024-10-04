@@ -27,6 +27,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "../_actions/transaction";
 import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
+import ResponsiblePicker from "./ResponsiblePicker";
 
 function CreateTransactionDialog({ trigger, type }: Props) {
     const form = useForm<CreateTransactionSchemaType>({
@@ -43,6 +44,10 @@ function CreateTransactionDialog({ trigger, type }: Props) {
 
     const handleCategoryChange = useCallback((value: string) => {
         form.setValue('categoryId', value)
+    }, [form])
+
+    const handleResponsibleChange = useCallback((value: any) => {
+        form.setValue('responsibles', [value])
     }, [form])
 
     const queryClient = useQueryClient()
@@ -63,7 +68,8 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 categoryId: undefined,
                 denominator: 1,
                 bank: "",
-                card: ""
+                card: "",
+                responsibles: []
             })
 
             queryClient.invalidateQueries({
@@ -277,7 +283,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                             }
 
                         </div>
-                        {type !== 'income'?
+                        {type !== 'income' ?
                             <div className="flex items-center justify-between gap-2">
                                 <FormField
                                     control={form.control}
@@ -313,6 +319,21 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                             :
                             <></>
                         }
+                        <FormField
+                            control={form.control}
+                            name="responsibles"
+                            render={() => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Responsaveis: </FormLabel>
+                                    <FormControl>
+                                        <ResponsiblePicker onChange={handleResponsibleChange} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Selecione os responsaveis dessa movimentação
+                                    </FormDescription>
+                                </FormItem>
+                            )}
+                        />
                     </form>
                 </Form>
                 <DialogFooter>

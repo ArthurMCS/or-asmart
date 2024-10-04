@@ -14,7 +14,8 @@ export const CreateTransactionSchema = z.object({
     ]),
     denominator: z.coerce.number().positive().min(1),
     card: z.string().optional(),
-    bank: z.string().optional()
+    bank: z.string().optional(),
+    responsibles: z.array(z.string()).nonempty("Deve haver pelo menos um responsável"),
 })
 
 export type CreateTransactionSchemaType = z.infer<typeof CreateTransactionSchema>

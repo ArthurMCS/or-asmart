@@ -70,9 +70,9 @@ model Transaction {
   card String?
   bank String?
 
-  categoryId String
-  category   Category                 @relation(fields: [categoryId], references: [id])
-  users      TransactionResponsible[]
+  categoryId   String
+  category     Category                 @relation(fields: [categoryId], references: [id])
+  responsibles TransactionResponsible[]
 
   creator UserSettings @relation("CreatedTransactions", fields: [createdBy], references: [id])
   updater UserSettings @relation("UpdatedTransactions", fields: [updatedBy], references: [id])

@@ -3,11 +3,10 @@
 import prisma from "@/lib/prisma";
 import { CreateTransactionSchema, CreateTransactionSchemaType } from "@/schema/transaction";
 import { currentUser } from "@clerk/nextjs/server";
+import { TransactionResponsible } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 export async function CreateTransaction(form: CreateTransactionSchemaType) {
-    debugger;
-    console.log("passou aqui: ", form)
     const parsedBody = CreateTransactionSchema.safeParse(form);
 
     if (!parsedBody.success) {
@@ -30,7 +29,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
         paymentDate,
         type,
         card,
-        bank
+        bank,
+        responsibles
     } = parsedBody.data
 
 
@@ -46,34 +46,42 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
         throw new Error("category not found")
     }
 
-    let transactions = []
-
     const new_amount = amount / denominator;
+
     for (let i = 1; i <= denominator; i++) {
-        let data = {
-            createdBy: user.id,
-            updatedBy: user.id,
-            name: `${name} - ${i}/${denominator}`,
-            amount: new_amount,
-            numerator: i,
-            denominator: denominator,
-            description: description || null,
-            date: date,
-            paymentDate: paymentDate || date,
-            type: type,
-            card: card || null,
-            bank: bank || null,
-            categoryId: categoryRow.id
+        // Cria a transação e obtém o ID gerado pelo banco de dados
+        const transaction = await prisma.transaction.create({
+            data: {
+                createdBy: user.id,
+                updatedBy: user.id,
+                name: `${name} - ${i}/${denominator}`,
+                amount: new_amount,
+                numerator: i,
+                denominator: denominator,
+                description: description || null,
+                date: date,
+                paymentDate: paymentDate || date,
+                type: type,
+                card: card || null,
+                bank: bank || null,
+                categoryId: categoryRow.id
+            }
+        });
+
+        // Cria as responsabilidades associadas à transação
+        let transactionResp = [];
+        for (let j = 0; j < responsibles.length; j++) {
+            transactionResp.push({
+                responsibleId: responsibles[j],
+                transactionId: transaction.id  // Agora você tem o ID da transação
+            });
         }
 
-        transactions.push(data)
-    } 
-
-    await prisma.$transaction([
-        prisma.transaction.createMany({
-            data: transactions
-        })        
-    ])
+        // Cria as responsabilidades em batch
+        await prisma.transactionResponsible.createMany({
+            data: transactionResp
+        });
+    }
 
     // await prisma.$transaction([
     //     prisma.transaction.create({

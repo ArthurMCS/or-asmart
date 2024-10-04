@@ -58,13 +58,13 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         ),
     },
     {
-        accessorKey: 'description',
+        accessorKey: 'name',
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Descrição" />
+            <DataTableColumnHeader column={column} title="Nome" />
         ),
         cell: ({ row }) => (
             <div className='capitalize'>
-                {row.original.description}
+                {row.original.name}
             </div>
         ),
     },
@@ -75,6 +75,26 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         ),
         cell: ({ row }) => {
             const date = new Date(row.original.date)
+            const formattedDate = date.toLocaleDateString("default", {
+                timeZone: "UTC",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+            })
+            return (
+                <div className='text-muted-foreground'>
+                    {formattedDate}
+                </div>
+            )
+        },
+    },
+    {
+        accessorKey: 'paymentDate',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Data pagamento" />
+        ),
+        cell: ({ row }) => {
+            const date = new Date(row.original.paymentDate)
             const formattedDate = date.toLocaleDateString("default", {
                 timeZone: "UTC",
                 year: "numeric",
@@ -120,6 +140,62 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
                 </p>
             )
         },
+    },
+    {
+        accessorKey: 'bank',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Banco" />
+        ),
+        cell: ({ row }) => {
+            return (
+                <p className='text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium'>
+                    {row.original.bank ?
+                        row.original.bank
+                        :
+                        "-"
+                    }
+                </p>
+            )
+        },
+    },
+    {
+        accessorKey: 'card',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Cartão" />
+        ),
+        cell: ({ row }) => {
+            return (
+                <p className='text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium'>
+                    {row.original.card ?
+                        row.original.card
+                        :
+                        "-"
+                    }
+                </p>
+            )
+        },
+    },
+    {
+        accessorKey: 'responsable',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Responsaveis" />
+        ),
+        cell: ({ row }) => (
+            <div className='capitalize'>
+                {row.original.responsibles.join(' | ')}
+            </div>
+        ),
+    },
+    {
+        accessorKey: 'description',
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Descrição" />
+        ),
+        cell: ({ row }) => (
+            <div className='capitalize'>
+                {row.original.description}
+            </div>
+        ),
     },
     {
         id: 'actions',
