@@ -42,7 +42,7 @@ function History({ userSettings }: { userSettings: UserSettings }) {
 
     const dataAvailable = historyDataQuery.data && historyDataQuery.data.length > 0;
 
-    console.log('historyDataQuery.data', historyDataQuery.data)
+    // console.log('historyDataQuery.data', historyDataQuery.data)
 
   return (
     <div className="px-4">

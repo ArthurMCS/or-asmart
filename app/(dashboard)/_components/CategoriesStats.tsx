@@ -20,31 +20,31 @@ function CategoriesStats({ from, to, userSettings }: Props) {
     const statsQuery = useQuery<GetCategoryStatsResponseType>({
         queryKey: ['overview', 'stats', 'categories', from, to],
         queryFn: () => fetch(`/api/stats/categories?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`).then(res => res.json()),
-      })
-    
-      const formatter = useMemo(() => {
-        return GetFormatterForCurrency(userSettings.currency) 
-      }, [userSettings.currency]) 
-      
-      
-  return (
-    <div className='flex w-full flex-wrap gap-2 md:flex-nowrap'>
-        <SkeletonWrapper isLoading={statsQuery.isPending}>
-                <CategoriesCard 
+    })
+
+    const formatter = useMemo(() => {
+        return GetFormatterForCurrency(userSettings.currency)
+    }, [userSettings.currency])
+
+
+    return (
+        <div className='flex w-full flex-wrap gap-2 md:flex-nowrap'>
+            <SkeletonWrapper isLoading={statsQuery.isPending}>
+                <CategoriesCard
                     formatter={formatter}
                     type="income"
                     data={statsQuery.data || []}
                 />
-        </SkeletonWrapper>
-        <SkeletonWrapper isLoading={statsQuery.isPending}>
-                <CategoriesCard 
+            </SkeletonWrapper>
+            <SkeletonWrapper isLoading={statsQuery.isPending}>
+                <CategoriesCard
                     formatter={formatter}
                     type="expense"
                     data={statsQuery.data || []}
                 />
-        </SkeletonWrapper>
-    </div>
-  )
+            </SkeletonWrapper>
+        </div>
+    )
 }
 
 export default CategoriesStats
@@ -53,7 +53,7 @@ function CategoriesCard({ data, type, formatter }: {
     type: TransactionType,
     formatter: Intl.NumberFormat,
     data: GetCategoryStatsResponseType
-}){
+}) {
     const filteredData = data.filter(el => el.type === type)
     const total = filteredData.reduce((acc, el) => acc + (el.totalAmount || 0), 0)
 
@@ -96,17 +96,17 @@ function CategoriesCard({ data, type, formatter }: {
                                             </span>
 
                                         </div>
-                                            <Progress
-                                                value={percentage}
-                                                indicator={type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}
-                                            />
+                                        <Progress
+                                            value={percentage}
+                                            indicator={type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}
+                                        />
                                     </div>
                                 )
                             }))}
                         </div>
                     </ScrollArea>
                 )}
-            </div>  
+            </div>
         </Card>
     )
 }
