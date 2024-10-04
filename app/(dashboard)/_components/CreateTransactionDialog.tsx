@@ -33,7 +33,8 @@ function CreateTransactionDialog({ trigger, type }: Props) {
         resolver: zodResolver(CreateTransactionSchema),
         defaultValues: {
             type,
-            date: new Date()
+            date: new Date(),
+            denominator: 1
         },
     })
 
@@ -276,7 +277,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                             }
 
                         </div>
-                        {type !== 'income' ?
+                        {type !== 'income'?
                             <div className="flex items-center justify-between gap-2">
                                 <FormField
                                     control={form.control}
