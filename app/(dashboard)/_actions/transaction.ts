@@ -47,6 +47,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
     let transactions = []
 
+
     for (let i = 1; i <= denominator; i++) {
         let data = {
             createdBy: user.id,
@@ -65,7 +66,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
         }
 
         transactions.push(data)
-    }
+    } 
 
     await prisma.$transaction([
         prisma.transaction.createMany({

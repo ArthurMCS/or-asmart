@@ -141,7 +141,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                                         <FormItem>
                                             <FormLabel>Parcelas</FormLabel>
                                             <FormControl>
-                                                <Input defaultValue={1} type="number" {...field} />
+                                                <Input defaultValue={1} min={1} type="number" {...field} />
                                             </FormControl>
                                             <FormDescription>
                                                 Numero de parcelas da transação
@@ -292,7 +292,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                                     name="card"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Cartão*</FormLabel>
+                                            <FormLabel>Cartão</FormLabel>
                                             <FormControl>
                                                 <Input defaultValue={""} {...field} />
                                             </FormControl>
