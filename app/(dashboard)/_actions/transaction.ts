@@ -3,10 +3,11 @@
 import prisma from "@/lib/prisma";
 import { CreateTransactionSchema, CreateTransactionSchemaType } from "@/schema/transaction";
 import { currentUser } from "@clerk/nextjs/server";
-import { Transaction } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 export async function CreateTransaction(form: CreateTransactionSchemaType) {
+    debugger;
+    console.log("passou aqui: ", form)
     const parsedBody = CreateTransactionSchema.safeParse(form);
 
     if (!parsedBody.success) {
@@ -47,13 +48,13 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
     let transactions = []
 
-
+    const new_amount = amount / denominator;
     for (let i = 1; i <= denominator; i++) {
         let data = {
             createdBy: user.id,
             updatedBy: user.id,
             name: `${name} - ${i}/${denominator}`,
-            amount: amount,
+            amount: new_amount,
             numerator: i,
             denominator: denominator,
             description: description || null,

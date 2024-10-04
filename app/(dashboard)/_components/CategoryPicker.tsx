@@ -32,10 +32,10 @@ function CategoryPicker({ type, onChange }: Props) {
     queryFn: () => fetch(`/api/categories?type=${type}`).then((res) => res.json())
   })
   
-  const selectedCategory = categoriesQuery.data?.find((category: Category) => category.name === value)
+  const selectedCategory = categoriesQuery.data?.find((category: Category) => category.id === value)
 
   const onSuccessCallback = useCallback((category: Category) => {
-        setValue(category.name)
+        setValue(category.id)
         setOpen((prev) => !prev)
   }, [])
   
@@ -67,13 +67,13 @@ function CategoryPicker({ type, onChange }: Props) {
                                 <CommandItem 
                                     key={c.name}
                                     onSelect={() => {
-                                        setValue(c.name);
+                                        setValue(c.id);
                                         setOpen((prev) => !prev);
                                     }}
                                 >
                                     <CategoryRow category={c} />
                                     <Check className={cn("ml-5 w-4 h-4 opacity-0", 
-                                        value === c.name && "opacity-100"
+                                        value === c.id && "opacity-100"
                                     )} />
                                 </CommandItem>
                             ))

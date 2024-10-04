@@ -70,6 +70,12 @@ function CreateTransactionDialog({ trigger, type }: Props) {
             })
 
             setOpen((prev) => !prev)
+        },
+        onError: (error) => {
+            console.log(error)
+            toast.error("Erro ao criar movimentação.", {
+                id: "create-transaction",
+            });
         }
     })
 
