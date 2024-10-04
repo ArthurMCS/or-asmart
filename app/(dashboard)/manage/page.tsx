@@ -11,7 +11,7 @@ import CreateCategoryDialog from '../_components/CreateCategoryDialog'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { category } from '@prisma/client'
+import { Category } from '@prisma/client'
 import DeleteCategoryDialog from '../_components/DeleteCategoryDialog'
 
 function page() {
@@ -102,7 +102,7 @@ function CategoryList({ type }: { type: TransactionType }) {
         )}
         {dataAvailable && (
           <div className='grid grid-flow-row gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-            {categoriesQuery.data.map((category: category) => (
+            {categoriesQuery.data.map((category: Category) => (
               <CategoryCard category={category} key={category.name} />
             ))}
           </div>
@@ -112,7 +112,7 @@ function CategoryList({ type }: { type: TransactionType }) {
   )
 }
 
-function CategoryCard({ category }: { category: category }) {
+function CategoryCard({ category }: { category: Category }) {
   return (
     <div className='flex flex-col justify-between rounded-md border shadow-md p-4'>
       <div className='flex flex-col items-center gap-2'>

@@ -55,7 +55,7 @@ function CategoriesCard({ data, type, formatter }: {
     data: GetCategoryStatsResponseType
 }){
     const filteredData = data.filter(el => el.type === type)
-    const total = filteredData.reduce((acc, el) => acc + (el._sum?.amount || 0), 0)
+    const total = filteredData.reduce((acc, el) => acc + (el.totalAmount || 0), 0)
 
     return (
         <Card className='h-80 w-full cil-span-6'>

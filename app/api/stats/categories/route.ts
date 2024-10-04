@@ -35,44 +35,44 @@ export async function GET(request: Request){
 export type GetCategoryStatsResponseType = Awaited<ReturnType<typeof getCategoryStats>>
 
 async function getCategoryStats(userId: string, from: Date, to: Date) {
-    const stats = await prisma.transaction.groupBy({
-        by: ['type', 'categoryId'],
-        where: {
-            createdBy: userId,
-            date: {
-                gte: from,
-                lte: to,
-            },
-        },
-        _sum: {
-            amount: true,
-        },
-        orderBy: {
-            _sum: {
-                amount: 'desc'
-            }
-        }
-    })
+    interface CategoryStat {
+        type: string;
+        categoryId: string;
+        categoryName: string;
+        categoryIcon: string;
+        totalAmount: number;
+    }
 
-    const categoryIds = stats.map(stat => stat.categoryId);
-    const categories = await prisma.category.findMany({
-        where: {
-            id: {
-                in: categoryIds,
-            },
-        },
-    });
+    const stats = await prisma.$queryRaw<CategoryStat[]>`
+        SELECT 
+            t.type, 
+            t.categoryId, 
+            c.name AS categoryName, 
+            c.icon AS categoryIcon, 
+            SUM(t.amount) AS totalAmount
+        FROM 
+            Transaction t
+        JOIN 
+            Category c 
+        ON 
+            t.categoryId = c.id
+        WHERE 
+            t.createdBy = ${userId}
+        AND 
+            t.date BETWEEN ${from} AND ${to}
+        GROUP BY 
+            t.type, t.categoryId, c.name, c.icon
+        ORDER BY 
+            totalAmount DESC;
+    `;
 
-    // Crie um mapa para fácil acesso às categorias
-    const categoryMap = Object.fromEntries(categories.map(category => [category.id, category]));
-
-    // Combine os resultados do groupBy com os detalhes da categoria
-    const detailedStats = stats.map(stat => ({
+    return stats.map(stat => ({
         type: stat.type,
         categoryId: stat.categoryId,
-        totalAmount: stat._sum.amount,
-        category: categoryMap[stat.categoryId], // Adiciona a categoria completa
+        totalAmount: stat.totalAmount,
+        category: {
+            name: stat.categoryName,
+            icon: stat.categoryIcon
+        }
     }));
-
-    return detailedStats
 }

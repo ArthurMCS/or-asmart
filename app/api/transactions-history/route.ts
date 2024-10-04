@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { GetFormatterForCurrency } from "@/lib/helpers";
 
-export async function GET(request: Request){
+export async function GET(request: Request) {
     const user = await currentUser();
 
     if (!user) {
@@ -15,9 +15,9 @@ export async function GET(request: Request){
     const from = searchParams.get('from')
     const to = searchParams.get('to')
 
-    const queryParams = OverviewQuerySchema.safeParse({from, to})
+    const queryParams = OverviewQuerySchema.safeParse({ from, to })
 
-    if(!queryParams.success) {
+    if (!queryParams.success) {
         return Response.json(queryParams.error.message, {
             status: 400,
         })
@@ -40,7 +40,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
         }
     })
 
-    if(!userSettings){
+    if (!userSettings) {
         throw new Error("user settings not found")
     }
 
@@ -54,6 +54,9 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
                 gte: from,
                 lte: to,
             },
+        },
+        include: {
+            category: true,  // Isso incluirá o objeto `Category`
         },
         orderBy: {
             date: "desc"

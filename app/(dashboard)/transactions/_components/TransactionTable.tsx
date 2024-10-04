@@ -17,7 +17,7 @@ import SkeletonWrapper from '@/components/SkeletonWrapper';
 import { DataTableColumnHeader } from '@/components/datatable/ColumnsHeader';
 import { cn } from '@/lib/utils';
 import { DataTableFacetedFilter } from '@/components/datatable/FacetedFilters';
-import { Transaction } from '@prisma/client';
+import { Transaction, Category } from '@prisma/client';
 import { DataTableViewOptions } from '@/components/datatable/ColumnsToggle';
 import { Button } from '@/components/ui/button';
 import { download, generateCsv, mkConfig } from 'export-to-csv';
@@ -30,6 +30,10 @@ interface Props {
     from: Date;
     to: Date;
 }
+
+type TransactionWithCategory = Transaction & {
+    category: Category; // Relaciona a categoria ao tipo Transaction
+};
 
 const emptyData: any[] = [];
 
@@ -46,9 +50,9 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         },
         cell: ({ row }) => (
             <div className='flex gap-2 capitalize'>
-                {row.original.categoryIcon}
+                {row.original.category.icon}
                 <div className='capitalize'>
-                    {row.original.category}
+                    {row.original.category.name}
                 </div>
             </div>
         ),
@@ -121,7 +125,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
-            return (<RowActions transaction={row.original}/>)
+            return (<RowActions transaction={row.original} />)
         },
     }
 ];
@@ -172,11 +176,12 @@ function TransactionTable({ from, to }: Props) {
     const categoriesOptions = useMemo(() => {
         const categoriesMap = new Map()
 
-        history.data?.forEach((transaction: Transaction) => {
-            categoriesMap.set(transaction.category, {
-                value: transaction.category,
-                label: `${transaction.categoryIcon} ${transaction.category}`
-            })
+        history.data?.forEach((transaction: TransactionWithCategory) => {
+            categoriesMap.set(transaction.categoryId,
+                {
+                    value: transaction.categoryId,
+                    label: `${transaction.category.icon} ${transaction.category.name}`
+                })
         })
 
         const uniqueCategories = new Set(categoriesMap.values())
@@ -188,19 +193,19 @@ function TransactionTable({ from, to }: Props) {
             <div className='flex flex-wrap items-end justify-between gap-2 py-4'>
                 <div className='flex gap-2'>
                     {table.getColumn('category') && (
-                        <DataTableFacetedFilter 
+                        <DataTableFacetedFilter
                             title='Categoria'
                             column={table.getColumn('category')}
                             options={categoriesOptions}
                         />
                     )}
                     {table.getColumn('category') && (
-                        <DataTableFacetedFilter 
+                        <DataTableFacetedFilter
                             title='Tipo'
                             column={table.getColumn('type')}
                             options={[
-                                {label: 'Ganho', value: 'income'},
-                                {label: 'Gasto', value: 'expense'}
+                                { label: 'Ganho', value: 'income' },
+                                { label: 'Gasto', value: 'expense' }
                             ]}
                         />
                     )}
@@ -212,8 +217,8 @@ function TransactionTable({ from, to }: Props) {
                         className='ml-outo h-8 lg:flex'
                         onClick={() => {
                             const data = table.getFilteredRowModel().rows.map((row) => ({
-                                categoria: row.original.category,
-                                icone: row.original.categoryIcon,
+                                categoria: row.original.category.name,
+                                icone: row.original.category.icon,
                                 descrição: row.original.description,
                                 tipo: row.original.type === 'income' ? 'ganho' : 'gasto',
                                 valor: row.original.formattedAmount,
@@ -222,7 +227,7 @@ function TransactionTable({ from, to }: Props) {
                             handleExportCSV(data)
                         }}
                     >
-                        <DownloadIcon className='mr-2 h-4 w-4'/>
+                        <DownloadIcon className='mr-2 h-4 w-4' />
                         Exportar CSV
                     </Button>
                     <DataTableViewOptions table={table} />
@@ -276,7 +281,7 @@ function TransactionTable({ from, to }: Props) {
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                    Anterior
+                        Anterior
                     </Button>
                     <Button
                         variant="outline"
@@ -284,7 +289,7 @@ function TransactionTable({ from, to }: Props) {
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                    Próxima
+                        Próxima
                     </Button>
                 </div>
             </SkeletonWrapper>
@@ -295,7 +300,7 @@ function TransactionTable({ from, to }: Props) {
 export default TransactionTable;
 
 
-function RowActions({ transaction }: { transaction:TransactionHistoryRow }){
+function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     return (
@@ -305,15 +310,15 @@ function RowActions({ transaction }: { transaction:TransactionHistoryRow }){
                 <DropdownMenuTrigger>
                     <Button variant="ghost" className='h-8 w-8 p-0'>
                         <span className='sr-only'>Menu</span>
-                        <MoreHorizontal className='h-4 w-4'/>
+                        <MoreHorizontal className='h-4 w-4' />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end'>
                     <DropdownMenuLabel>Ações</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className='flex items-center gap-2' onSelect={() => {setShowDeleteDialog(prev => !prev)}}>
-                        <TrashIcon className='h-4 w-4 text-muted-foreground'/>
-                            Excluir
+                    <DropdownMenuItem className='flex items-center gap-2' onSelect={() => { setShowDeleteDialog(prev => !prev) }}>
+                        <TrashIcon className='h-4 w-4 text-muted-foreground' />
+                        Excluir
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
