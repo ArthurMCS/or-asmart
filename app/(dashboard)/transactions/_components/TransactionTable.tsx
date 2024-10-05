@@ -182,7 +182,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         ),
         cell: ({ row }) => (
             <div className='capitalize'>
-                {row.original.responsibles.join(' | ')}
+                {row.original.responsibles.map((responsible) => responsible.responsible.name).join(' | ')}
             </div>
         ),
     },

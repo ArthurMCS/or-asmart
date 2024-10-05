@@ -57,12 +57,18 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
         },
         include: {
             category: true,  // Isso incluirá o objeto `Category`
-            responsibles: true
+            responsibles: {
+                include: {
+                    responsible: true,  // Isso incluirá o objeto `Responsible`
+                },
+            },
         },
         orderBy: {
             date: "desc"
         }
     })
+
+    console.log(transactions)
 
     return transactions.map((transaction) => ({
         ...transaction,
