@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const CreateResponsibleSchema = z.object({
+    id: z.string(),
     name: z.string().min(3).max(20),
     color: z.string().max(20)
 });

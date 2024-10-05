@@ -72,7 +72,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
         let transactionResp = [];
         for (let j = 0; j < responsibles.length; j++) {
             transactionResp.push({
-                responsibleId: responsibles[j],
+                responsibleId: responsibles[j].id,
                 transactionId: transaction.id  // Agora você tem o ID da transação
             });
         }

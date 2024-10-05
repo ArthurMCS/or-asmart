@@ -28,6 +28,7 @@ import { CreateTransaction } from "../_actions/transaction";
 import { toast } from "sonner";
 import { DateToUTCDate } from "@/lib/helpers";
 import ResponsiblePicker from "./ResponsiblePicker";
+import { Responsible } from '@prisma/client';
 
 function CreateTransactionDialog({ trigger, type }: Props) {
     const form = useForm<CreateTransactionSchemaType>({
@@ -46,9 +47,12 @@ function CreateTransactionDialog({ trigger, type }: Props) {
         form.setValue('categoryId', value)
     }, [form])
 
-    const handleResponsibleChange = useCallback((value: any) => {
-        form.setValue('responsibles', [value])
-    }, [form])
+    const handleResponsibleChange = useCallback((value: Responsible[]) => {
+        console.log(value)
+        if (value.length > 0) {
+            form.setValue('responsibles', [value[0], ...value.slice(1)]);
+        }
+    }, [form]);
 
     const queryClient = useQueryClient()
 

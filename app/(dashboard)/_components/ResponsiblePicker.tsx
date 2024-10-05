@@ -12,7 +12,7 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Props {
-    onChange: (value: string) => void
+    onChange: (responsibles: Responsible[]) => void
 }
 
 function ResponsiblePicker({ onChange }: Props) {
@@ -23,6 +23,11 @@ function ResponsiblePicker({ onChange }: Props) {
         queryKey: ['responsible'],
         queryFn: () => fetch(`/api/responsibles`).then((res) => res.json())
     })
+
+    useEffect(() => {
+        if(!responsibles) return
+        onChange(responsibles)
+      }, [onChange, responsibles]) 
 
     // Função para adicionar responsável, garantindo que ele não esteja duplicado
     const onSuccessCallback = useCallback((responsible: Responsible) => {
@@ -72,7 +77,6 @@ function ResponsiblePicker({ onChange }: Props) {
                                         key={c.id}
                                         onSelect={() => {
                                             addResponsible(c);
-                                            setOpen((prev) => !prev);
                                         }}
                                     >
                                         <ResponsibleRow responsible={c} />
