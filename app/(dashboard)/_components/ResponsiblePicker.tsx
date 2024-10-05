@@ -17,32 +17,29 @@ interface Props {
 
 function ResponsiblePicker({ onChange }: Props) {
     const [open, setOpen] = React.useState(false)
-    const [responsibleId, setResponsible] = React.useState("")
-
-    useEffect(() => {
-        if (!responsibleId) return
-        onChange(responsibleId)
-    }, [onChange, responsibleId])
+    const [responsibles, setResponsibleIds] = React.useState<Responsible[]>([]);
 
     const responsiblesQuery = useQuery({
-        queryKey: ['responsible', responsibleId],
-        queryFn: () => fetch(`/api/responsibles?id=${responsibleId}`).then((res) => res.json())
+        queryKey: ['responsible'],
+        queryFn: () => fetch(`/api/responsibles`).then((res) => res.json())
     })
 
-    const selectedResponsible = responsiblesQuery.data?.find((responsible: Responsible) => responsible.id === responsibleId)
-
+    // Função para adicionar responsável, garantindo que ele não esteja duplicado
     const onSuccessCallback = useCallback((responsible: Responsible) => {
-        setResponsible(responsible.id)
-        setOpen((prev) => !prev)
-    }, [])
+        addResponsible(responsible)
+        setOpen((prev) => !prev);
+    }, []);
 
-
-    let responsables = new Array<Responsible>;
     const addResponsible = (resp: Responsible) => {
-        setOpen((prev) => !prev)
-
-        responsables.push(resp)
-    }
+        setResponsibleIds((prevResp) => {
+            if (prevResp.some((r) => r.id === resp.id)) {                
+                return prevResp.filter((r) => r.id !== resp.id);
+            }
+            else {
+                return [...prevResp, resp];
+            }
+        });
+    };
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -53,8 +50,8 @@ function ResponsiblePicker({ onChange }: Props) {
                     aria-expanded={open}
                     className='w-[220px] justify-between'
                 >
-                    {selectedResponsible ?
-                        (<ResponsibleRow responsible={selectedResponsible} />) :
+                    {responsibles ?
+                        (<ResponsibleSelectedRow responsibles={responsibles} />) :
                         ("Selecione os responsaveis")
                     }
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
@@ -74,14 +71,13 @@ function ResponsiblePicker({ onChange }: Props) {
                                     <CommandItem
                                         key={c.id}
                                         onSelect={() => {
-                                            setResponsible(c.id);
+                                            addResponsible(c);
                                             setOpen((prev) => !prev);
                                         }}
                                     >
                                         <ResponsibleRow responsible={c} />
                                         <Check className={cn("ml-5 w-4 h-4 opacity-0",
-                                            // responsables.some(res => res.id === c.id) && "opacity-100"
-                                            responsibleId === c.id && "opacity-100"
+                                            responsibles.some(res => res.id === c.id) && "opacity-100"
                                         )} />
                                     </CommandItem>
                                 ))
@@ -97,10 +93,35 @@ function ResponsiblePicker({ onChange }: Props) {
 
 function ResponsibleRow({ responsible }: { responsible: Responsible }) {
     return (
-        <div className='flex items-center gap-2'>
-            <span key={responsible.id}>{responsible.name} - {responsible.color}</span>
+        <div key={responsible.id} className="flex items-center gap-2">
+            <div
+                style={{ backgroundColor: responsible.color }}
+                className="w-3 h-3 rounded-full"
+            />
+            <span>{responsible.name}</span>
         </div>
     )
 }
+
+function ResponsibleSelectedRow({ responsibles }: { responsibles: Array<Responsible> }) {
+    return (
+        <div className='flex items-center gap-2'>
+            {responsibles.length > 2 ? (
+                <>
+                    {responsibles.slice(0, 2).map((responsible) => (
+                        <ResponsibleRow responsible={responsible}></ResponsibleRow>
+                    ))}
+                    <span>+ {responsibles.length - 2}</span>
+                </>
+            ) : (
+                responsibles.map((responsible) => (
+                    <ResponsibleRow responsible={responsible}></ResponsibleRow>
+                ))
+            )}
+        </div>
+    );
+}
+
+
 
 export default ResponsiblePicker
