@@ -48,7 +48,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     }, [form])
 
     const handleResponsibleChange = useCallback((value: Responsible[]) => {
-        console.log(value)
         if (value.length > 0) {
             form.setValue('responsibles', [value[0], ...value.slice(1)]);
         }
@@ -83,7 +82,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
             setOpen((prev) => !prev)
         },
         onError: (error) => {
-            console.log(error)
             toast.error("Erro ao criar movimentação.", {
                 id: "create-transaction",
             });

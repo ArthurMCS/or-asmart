@@ -23,10 +23,7 @@ export async function GET(request: Request) {
         })
     }
 
-
     const transactions = await getTransactionsHistory(user.id, queryParams.data.from, queryParams.data.to)
-
-    console.log("transactions", transactions)
 
     return Response.json(transactions)
 }
@@ -67,8 +64,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
             date: "desc"
         }
     })
-
-    console.log(transactions)
 
     return transactions.map((transaction) => ({
         ...transaction,

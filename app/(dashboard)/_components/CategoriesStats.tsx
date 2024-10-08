@@ -19,8 +19,25 @@ interface Props {
 function CategoriesStats({ from, to, userSettings }: Props) {
     const statsQuery = useQuery<GetCategoryStatsResponseType>({
         queryKey: ['overview', 'stats', 'categories', from, to],
-        queryFn: () => fetch(`/api/stats/categories?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`).then(res => res.json()),
-    })
+        queryFn: async () => {
+            try {
+                const response = await fetch(`/api/stats/categories?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`)
+
+                // Verifique se a resposta não é bem-sucedida (HTTP status code >= 400)
+                if (!response.ok) {
+                    // console.log(response)
+                }
+
+                // Tente converter a resposta em JSON
+                const data = await response.json();
+                return data;
+
+            } catch (error) {
+                // Exibe um erro customizado
+                // console.error(error);
+            }
+        }
+    });
 
     const formatter = useMemo(() => {
         return GetFormatterForCurrency(userSettings.currency)

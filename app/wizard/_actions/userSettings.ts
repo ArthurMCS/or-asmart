@@ -11,8 +11,6 @@ export async function UpdateUserCurrency(currency: string){
         currency
     })
 
-    console.log('parsedBody', parsedBody)
-
     if(!parsedBody.success){
         throw parsedBody.error;
     }
