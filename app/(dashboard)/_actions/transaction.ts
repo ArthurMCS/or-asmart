@@ -49,18 +49,22 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     const new_amount = amount / denominator;
 
     for (let i = 1; i <= denominator; i++) {
+        const paymentDateValue = (type === "expense" && !paymentDate)
+            ? new Date(orderDate.getFullYear(), orderDate.getMonth() + 1, 1) // Primeiro dia do próximo mês
+            : paymentDate;
+
         // Cria a transação e obtém o ID gerado pelo banco de dados
         const transaction = await prisma.transaction.create({
             data: {
                 createdBy: user.id,
                 updatedBy: user.id,
-                name: `${name} - ${i}/${denominator}`,
+                name: `${name} - ${i.toString().padStart(2, '0')}/${denominator}`,
                 amount: new_amount,
                 numerator: i,
                 denominator: denominator,
                 description: description || null,
                 orderDate: orderDate,
-                paymentDate: paymentDate,
+                paymentDate: type === "income" ? orderDate : paymentDateValue,
                 type: type,
                 card: card || null,
                 bank: bank || null,
