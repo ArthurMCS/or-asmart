@@ -298,7 +298,7 @@ function TransactionTable({ from, to }: Props) {
                                 descrição: row.original.description,
                                 tipo: row.original.type === 'income' ? 'ganho' : 'gasto',
                                 valor: row.original.formattedAmount,
-                                data: row.original.date
+                                data: row.original.paymentDate
                             }))
                             handleExportCSV(data)
                         }}
