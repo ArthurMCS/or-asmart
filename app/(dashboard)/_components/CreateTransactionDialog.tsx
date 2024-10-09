@@ -35,7 +35,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
         resolver: zodResolver(CreateTransactionSchema),
         defaultValues: {
             type,
-            date: new Date(),
+            orderDate: new Date(),
             denominator: 1
         },
     })
@@ -67,7 +67,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 type,
                 description: '',
                 amount: 0,
-                date: new Date(),
+                orderDate: new Date(),
                 categoryId: undefined,
                 denominator: 1,
                 bank: "",
@@ -96,7 +96,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
 
         mutate({
             ...values,
-            date: DateToUTCDate(values.date)
+            orderDate: DateToUTCDate(values.orderDate)
         })
     }, [mutate])
 
@@ -206,7 +206,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
 
                             <FormField
                                 control={form.control}
-                                name="date"
+                                name="orderDate"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Data da movimentação</FormLabel>

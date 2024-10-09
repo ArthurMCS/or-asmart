@@ -35,12 +35,10 @@ export async function GET(request: Request){
 export type GetCategoryStatsResponseType = Awaited<ReturnType<typeof getCategoryStats>>
 
 async function getCategoryStats(userId: string, from: Date, to: Date) {
-    console.log("From:", from, "To:", to);
-
     const transactions = await prisma.transaction.findMany({
         where: {
             createdBy: userId,
-            date: {
+            orderDate: {
                 gte: from,
                 lte: to,
             },

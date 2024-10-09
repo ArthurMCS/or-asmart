@@ -25,7 +25,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
         denominator,
         description,
         categoryId,
-        date,
+        orderDate,
         paymentDate,
         type,
         card,
@@ -59,8 +59,8 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
                 numerator: i,
                 denominator: denominator,
                 description: description || null,
-                date: date,
-                paymentDate: paymentDate || date,
+                orderDate: orderDate,
+                paymentDate: paymentDate,
                 type: type,
                 card: card || null,
                 bank: bank || null,
@@ -82,84 +82,4 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
             data: transactionResp
         });
     }
-
-    // await prisma.$transaction([
-    //     prisma.transaction.create({
-    //         data: {
-    //             createdBy: user.id,
-    //             updatedBy: user.id,
-    //             name: name,
-    //             amount: amount,
-    //             numerator: 1,
-    //             denominator: denominator,
-    //             description: description || null,
-    //             date: date,
-    //             paymentDate: paymentDate || date,
-    //             type: type,
-    //             card: card || null,
-    //             bank: bank || null,
-    //             categoryId: categoryRow.id
-    //         }
-    //     }),
-
-    //     prisma.monthHistory.upsert({
-    //         where: {
-    //             day_month_year_userID: {
-    //                 userID: user.id,
-    //                 day: date.getUTCDate(),
-    //                 month: date.getUTCMonth(),
-    //                 year: date.getUTCFullYear()
-    //             }
-    //         },
-
-    //         create: {
-    //             userID: user.id,
-    //             day: date.getUTCDate(),
-    //             month: date.getUTCMonth(),
-    //             year: date.getUTCFullYear(),
-    //             expense: type === 'expense' ? amount : 0,
-    //             income: type === 'income' ? amount : 0,
-    //         },
-
-
-    //         update: {
-    //             expense: {
-    //                 increment: type === 'expense' ? amount : 0,
-    //             },
-
-    //             income: {
-    //                 increment: type === 'income' ? amount : 0,
-    //             }
-    //         }
-    //     }),
-
-    //     prisma.yearHistory.upsert({
-    //         where: {
-    //             month_year_userID: {
-    //                 userID: user.id,
-    //                 month: date.getUTCMonth(),
-    //                 year: date.getUTCFullYear()
-    //             }
-    //         },
-
-    //         create: {
-    //             userID: user.id,
-    //             month: date.getUTCMonth(),
-    //             year: date.getUTCFullYear(),
-    //             expense: type === 'expense' ? amount : 0,
-    //             income: type === 'income' ? amount : 0,
-    //         },
-
-
-    //         update: {
-    //             expense: {
-    //                 increment: type === 'expense' ? amount : 0,
-    //             },
-
-    //             income: {
-    //                 increment: type === 'income' ? amount : 0,
-    //             }
-    //         }
-    //     })
-    // ])
 }

@@ -69,12 +69,12 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         ),
     },
     {
-        accessorKey: 'date',
+        accessorKey: 'orderDate',
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Data" />
         ),
         cell: ({ row }) => {
-            const date = new Date(row.original.date)
+            const date = new Date(row.original.orderDate)
             const formattedDate = date.toLocaleDateString("default", {
                 timeZone: "UTC",
                 year: "numeric",

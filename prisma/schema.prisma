@@ -61,8 +61,8 @@ model Transaction {
   name        String
   amount      Float
   description String?
-  date        DateTime @default(now())
-  paymentDate DateTime
+  orderDate   DateTime @default(now())
+  paymentDate DateTime?
   numerator   Int      @default(1)
   denominator Int      @default(1)
   type        String   @default("income")
@@ -76,6 +76,8 @@ model Transaction {
 
   creator UserSettings @relation("CreatedTransactions", fields: [createdBy], references: [id])
   updater UserSettings @relation("UpdatedTransactions", fields: [updatedBy], references: [id])
+
+  @@map("Transaction")
 }
 
 model TransactionResponsible {

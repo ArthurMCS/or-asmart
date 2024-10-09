@@ -19,8 +19,6 @@ export async function DeleteTransaction(id: string) {
         }
     })
 
-    console.log('transaction', transaction)
-
     if (!transaction) {
         throw new Error("Transação não encontrada ou não pertence ao usuário")
     }

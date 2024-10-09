@@ -6,8 +6,8 @@ export const CreateTransactionSchema = z.object({
     name: z.string(),
     amount: z.coerce.number().positive().multipleOf(0.01),
     description: z.string().optional(),
-    date: z.coerce.date(),
     categoryId: z.string(),
+    orderDate: z.coerce.date(),
     paymentDate: z.coerce.date().optional(),
     type: z.union([
         z.literal("income"),

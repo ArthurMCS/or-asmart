@@ -29,6 +29,7 @@ function CreateResponsibleDialog({ successCallback, trigger }: Props) {
     const form = useForm<CreateResponsibleSchemaType>({
         resolver: zodResolver(CreateResponsibleSchema),
         defaultValues: {
+            id: "1",
             color: getRandomHexColor()
         }
     })
@@ -73,25 +74,6 @@ function CreateResponsibleDialog({ successCallback, trigger }: Props) {
             mutate(value)
         }, [mutate]
     )
-
-    // let responsibles = new Array<Responsible>()
-    // const onCreate = () => {
-    //     form.setValue("color", getRandomHexColor())
-
-    //     const id = ""
-
-    //     const aux: Responsible = {
-    //         id: id,
-    //         ...form.getValues()
-    //     }
-
-    //     responsibles.push(aux)
-
-    //     form.reset({
-    //         name: "",
-    //         color: "",
-    //     })
-    // }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>

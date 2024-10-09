@@ -40,7 +40,7 @@ async function getBalanceStats(userId: string, from: Date, to: Date) {
         by: ['type'],
         where: {
             createdBy: userId,
-            date: {
+            orderDate: {
                 gte: from,
                 lte: to,
             },
