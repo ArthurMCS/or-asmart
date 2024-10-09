@@ -41,7 +41,7 @@ function History({ userSettings }: { userSettings: UserSettings }) {
     })
 
     const dataAvailable = historyDataQuery.data && historyDataQuery.data.length > 0;
-
+    
     return (
         <div className="px-4">
             <h2 className="mt-12 text-3xl font-bold">Histórico</h2>

@@ -50,7 +50,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
     for (let i = 1; i <= denominator; i++) {
         const paymentDateValue = (type === "expense" && !paymentDate)
-            ? new Date(orderDate.getFullYear(), orderDate.getMonth() + 1, 1) // Primeiro dia do próximo mês
+            ? new Date(orderDate.getFullYear(), orderDate.getMonth() + (1*i), 1) // Primeiro dia do próximo mês
             : paymentDate;
 
         // Cria a transação e obtém o ID gerado pelo banco de dados

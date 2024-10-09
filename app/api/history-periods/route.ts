@@ -19,26 +19,40 @@ export type getHistoryPeriodsResponseType = Awaited<
 >
 
 async function getHistoryPeriods(userId: string) {
-    const result = await prisma.monthHistory.findMany({
+    const result = await prisma.transaction.findMany({
         where: {
-            userID: userId
+            createdBy: userId,
+            paymentDate: {
+                not: null
+            }
         },
         select: {
-            year: true
+            paymentDate: true
         },
-        distinct: ['year'],
+        distinct: ['paymentDate'], // Distinct para considerar apenas anos distintos
         orderBy: [
             {
-                year: "asc"
+                paymentDate: 'asc'
             }
         ]
-    })
+    });
 
-    const years = result.map((el) => el.year)
+    // Mapeia os anos das transações, garantindo que `paymentDate` seja convertido corretamente
+    const years = result.map((el) => {
+        if (el.paymentDate) { // Verifica se `paymentDate` não é nulo
+            const paymentDate = new Date(el.paymentDate);
+            return paymentDate.getFullYear();
+        }
+        return null; // Trata casos de `paymentDate` nulo
+    }).filter((year) => year !== null); // Remove valores nulos
 
-    if(years.length === 0){
-        return [new Date().getFullYear()]
+    // Remove possíveis duplicatas
+    const uniqueYears = Array.from(new Set(years))
+
+    // Se não houver nenhum ano retornado, retorna o ano atual
+    if (uniqueYears.length === 0) {
+        return [new Date().getFullYear()]; // Retorna o ano atual como fallback
     }
 
-    return years
+    return uniqueYears;
 }

@@ -77,15 +77,15 @@ async function getYearHistoryData(userId: string, year: number): Promise<History
     }[]>
     (Prisma.sql`
         SELECT 
-            strftime('%m', datetime(orderDate / 1000, 'unixepoch')) AS month, -- Converte timestamp para datetime e extrai o mês
+            strftime('%m', datetime(paymentDate / 1000, 'unixepoch')) AS month, -- Converte timestamp para datetime e extrai o mês
             SUM(CASE WHEN type like 'expense' THEN amount ELSE 0 END) AS expense, 
             SUM(CASE WHEN type like 'income' THEN amount ELSE 0 END) AS income 
         FROM 
             "Transaction"
         WHERE 
             createdBy = ${userId} 
-            AND datetime(orderDate / 1000, 'unixepoch') >= datetime(${startDate.toISOString()}) 
-            AND datetime(orderDate / 1000, 'unixepoch') < datetime(${endDate.toISOString()}) 
+            AND datetime(paymentDate / 1000, 'unixepoch') >= datetime(${startDate.toISOString()}) 
+            AND datetime(paymentDate / 1000, 'unixepoch') < datetime(${endDate.toISOString()}) 
         GROUP BY 
             month
         ORDER BY 
@@ -129,25 +129,28 @@ async function getMonthHistoryData(userId: string, year: number, month: number):
     // Query SQL para agrupar por dia e somar receitas e despesas
     const result = await prisma.$queryRaw<{
         day: string;
+        month: string;
         expense: number;
         income: number;
-    }[]>
-    (Prisma.sql`
-        SELECT 
-            strftime('%d', datetime(orderDate / 1000, 'unixepoch')) AS day, -- Converte timestamp para datetime e extrai o dia
-            SUM(CASE WHEN type like 'expense' THEN amount ELSE 0 END) AS expense, 
-            SUM(CASE WHEN type like 'income' THEN amount ELSE 0 END) AS income 
-        FROM 
-            "Transaction"
-        WHERE 
-            createdBy = ${userId} 
-            AND datetime(orderDate / 1000, 'unixepoch') >= datetime(${startDate.toISOString()}) 
-            AND datetime(orderDate / 1000, 'unixepoch') < datetime(${endDate.toISOString()}) 
-        GROUP BY 
-            day
-        ORDER BY 
-            day ASC;
-    `);
+    }[]>(
+        Prisma.sql`
+            SELECT 
+                strftime('%d', datetime(paymentDate / 1000, 'unixepoch')) AS day, -- Extrai o dia
+                strftime('%m', datetime(paymentDate / 1000, 'unixepoch')) AS month, -- Extrai o mês
+                SUM(CASE WHEN type like 'expense' THEN amount ELSE 0 END) AS expense, 
+                SUM(CASE WHEN type like 'income' THEN amount ELSE 0 END) AS income 
+            FROM 
+                "Transaction"
+            WHERE 
+                createdBy = ${userId} 
+                AND datetime(paymentDate / 1000, 'unixepoch') >= datetime(${startDate.toISOString()}) 
+                AND datetime(paymentDate / 1000, 'unixepoch') < datetime(${endDate.toISOString()}) 
+            GROUP BY 
+                month, day -- Agrupa pelo mês e dia
+            ORDER BY 
+                month ASC, day ASC;
+        `
+    );
 
     // Inicializa o array de histórico
     const history: HistoryData[] = [];
@@ -160,7 +163,11 @@ async function getMonthHistoryData(userId: string, year: number, month: number):
         let income = 0;
 
         // Procura os dados do dia i
-        const dayData = result.find(row => parseInt(row.day) === i);
+        const dayData = result.find(row => 
+        {
+            console.log(">>>>>", row, parseInt(row.day), i, parseInt(row.day) === i)
+            return parseInt(row.day) === i
+        });
 
         if (dayData) {
             expense = dayData.expense || 0;
