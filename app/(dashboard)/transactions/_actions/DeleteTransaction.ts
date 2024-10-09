@@ -5,23 +5,21 @@ import { redirect } from "next/navigation";
 import { Transaction } from '@prisma/client';
 import prisma from "@/lib/prisma";
 
-export async function DeleteTransaction(id: string){
+export async function DeleteTransaction(id: string) {
     const user = await currentUser();
 
-    if(!user){
+    if (!user) {
         redirect('/sign-in')
     }
 
     const transaction = await prisma.transaction.findUnique({
         where: {
             id, // Buscando a transação pelo ID
-            userId: user.id, // Verificando se a transação pertence ao usuário
+            createdBy: user.id, // Verificando se a transação pertence ao usuário
         }
     })
 
-    console.log('transaction', transaction)
-
-    if(!transaction){
+    if (!transaction) {
         throw new Error("Transação não encontrada ou não pertence ao usuário")
     }
 

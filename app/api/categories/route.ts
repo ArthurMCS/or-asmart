@@ -28,7 +28,7 @@ export async function GET(request: Request) {
 
     const categories = await prisma.category.findMany({
         where: {
-            userId: user.id,
+            createdBy: user.id,
             ...(type && { type }), // Apenas adiciona "type" se ele existir
         },
         orderBy: {

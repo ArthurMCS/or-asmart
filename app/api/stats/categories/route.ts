@@ -35,24 +35,48 @@ export async function GET(request: Request){
 export type GetCategoryStatsResponseType = Awaited<ReturnType<typeof getCategoryStats>>
 
 async function getCategoryStats(userId: string, from: Date, to: Date) {
-    const stats = await prisma.transaction.groupBy({
-        by: ['type', 'category', 'categoryIcon'],
+    const transactions = await prisma.transaction.findMany({
         where: {
-            userId,
-            date: {
+            createdBy: userId,
+            orderDate: {
                 gte: from,
                 lte: to,
             },
         },
-        _sum: {
+        select: {
+            type: true,
+            categoryId: true,
             amount: true,
+            category: {
+                select: {
+                    name: true,
+                    icon: true,
+                },
+            },
         },
-        orderBy: {
-            _sum: {
-                amount: 'desc'
-            }
-        }
-    })
+    });
 
-    return stats
+    // Agora agregamos os dados manualmente
+    const stats = transactions.reduce((acc, transaction) => {
+        const key = `${transaction.type}-${transaction.categoryId}`;
+        
+        if (!acc[key]) {
+            acc[key] = {
+                type: transaction.type,
+                categoryId: transaction.categoryId,
+                totalAmount: 0,
+                category: {
+                    name: transaction.category?.name,
+                    icon: transaction.category?.icon,
+                },
+            };
+        }
+
+        acc[key].totalAmount += transaction.amount;
+        return acc;
+    }, {} as Record<string, { type: string, categoryId: string, totalAmount: number, category: { name?: string, icon?: string } }>);
+
+    // Converte o resultado em um array
+    return Object.values(stats).sort((a, b) => b.totalAmount - a.totalAmount);
 }
+

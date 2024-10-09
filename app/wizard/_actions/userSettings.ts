@@ -11,8 +11,6 @@ export async function UpdateUserCurrency(currency: string){
         currency
     })
 
-    console.log('parsedBody', parsedBody)
-
     if(!parsedBody.success){
         throw parsedBody.error;
     }
@@ -25,7 +23,7 @@ export async function UpdateUserCurrency(currency: string){
 
     const userSettings = await prisma.userSettings.update({
         where: {
-            userId: user.id
+            id: user.id
         },
         data: {
             currency

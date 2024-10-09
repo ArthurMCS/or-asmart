@@ -3,7 +3,7 @@ import { OverviewQuerySchema } from "@/schema/overview";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-export async function GET(request: Request){
+export async function GET(request: Request) {
     const user = await currentUser();
 
     if (!user) {
@@ -14,9 +14,9 @@ export async function GET(request: Request){
     const from = searchParams.get('from')
     const to = searchParams.get('to')
 
-    const queryParams = OverviewQuerySchema.safeParse({from, to})
+    const queryParams = OverviewQuerySchema.safeParse({ from, to })
 
-    if(!queryParams.success) {
+    if (!queryParams.success) {
         return Response.json(queryParams.error.message, {
             status: 400,
         })
@@ -39,8 +39,8 @@ async function getBalanceStats(userId: string, from: Date, to: Date) {
     const totals = await prisma.transaction.groupBy({
         by: ['type'],
         where: {
-            userId,
-            date: {
+            createdBy: userId,
+            orderDate: {
                 gte: from,
                 lte: to,
             },

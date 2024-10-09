@@ -19,32 +19,49 @@ interface Props {
 function CategoriesStats({ from, to, userSettings }: Props) {
     const statsQuery = useQuery<GetCategoryStatsResponseType>({
         queryKey: ['overview', 'stats', 'categories', from, to],
-        queryFn: () => fetch(`/api/stats/categories?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`).then(res => res.json()),
-      })
-    
-      const formatter = useMemo(() => {
-        return GetFormatterForCurrency(userSettings.currency) 
-      }, [userSettings.currency]) 
-      
-      
-  return (
-    <div className='flex w-full flex-wrap gap-2 md:flex-nowrap'>
-        <SkeletonWrapper isLoading={statsQuery.isPending}>
-                <CategoriesCard 
+        queryFn: async () => {
+            try {
+                const response = await fetch(`/api/stats/categories?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`)
+
+                // Verifique se a resposta não é bem-sucedida (HTTP status code >= 400)
+                if (!response.ok) {
+                    // console.log(response)
+                }
+
+                // Tente converter a resposta em JSON
+                const data = await response.json();
+                return data;
+
+            } catch (error) {
+                // Exibe um erro customizado
+                // console.error(error);
+            }
+        }
+    });
+
+    const formatter = useMemo(() => {
+        return GetFormatterForCurrency(userSettings.currency)
+    }, [userSettings.currency])
+
+
+    return (
+        <div className='flex w-full flex-wrap gap-2 md:flex-nowrap'>
+            <SkeletonWrapper isLoading={statsQuery.isPending}>
+                <CategoriesCard
                     formatter={formatter}
                     type="income"
                     data={statsQuery.data || []}
                 />
-        </SkeletonWrapper>
-        <SkeletonWrapper isLoading={statsQuery.isPending}>
-                <CategoriesCard 
+            </SkeletonWrapper>
+            <SkeletonWrapper isLoading={statsQuery.isPending}>
+                <CategoriesCard
                     formatter={formatter}
                     type="expense"
                     data={statsQuery.data || []}
                 />
-        </SkeletonWrapper>
-    </div>
-  )
+            </SkeletonWrapper>
+        </div>
+    )
 }
 
 export default CategoriesStats
@@ -53,9 +70,9 @@ function CategoriesCard({ data, type, formatter }: {
     type: TransactionType,
     formatter: Intl.NumberFormat,
     data: GetCategoryStatsResponseType
-}){
+}) {
     const filteredData = data.filter(el => el.type === type)
-    const total = filteredData.reduce((acc, el) => acc + (el._sum?.amount || 0), 0)
+    const total = filteredData.reduce((acc, el) => acc + (el.totalAmount || 0), 0)
 
     return (
         <Card className='h-80 w-full cil-span-6'>
@@ -79,14 +96,14 @@ function CategoriesCard({ data, type, formatter }: {
                     <ScrollArea className='h-60 w-full px-4'>
                         <div className='flex w-full flex-col gap-4 p-4'>
                             {filteredData.map((item => {
-                                const amount = item._sum.amount || 0;
+                                const amount = item.totalAmount || 0;
                                 const percentage = (amount * 100) / (total || amount)
 
                                 return (
-                                    <div key={item.category} className='flex flex-col gap-2'>
+                                    <div key={item.categoryId} className='flex flex-col gap-2'>
                                         <div className='flex items-center text-gray-400'>
                                             <span className='flex items-center text-gray-400'>
-                                                {item.categoryIcon} {item.category}
+                                                {item.category.icon} {item.category.name}
                                                 <span className='ml-2 mr-2 text-xs text-muted-foreground'>
                                                     ({percentage.toFixed(0)}%)
                                                 </span>
@@ -96,17 +113,17 @@ function CategoriesCard({ data, type, formatter }: {
                                             </span>
 
                                         </div>
-                                            <Progress
-                                                value={percentage}
-                                                indicator={type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}
-                                            />
+                                        <Progress
+                                            value={percentage}
+                                            indicator={type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}
+                                        />
                                     </div>
                                 )
                             }))}
                         </div>
                     </ScrollArea>
                 )}
-            </div>  
+            </div>
         </Card>
     )
 }

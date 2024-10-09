@@ -22,7 +22,8 @@ export async function CreateCategory(form: CreateCategorySchemaType){
 
     return await prisma.category.create({
         data: {
-            userId: user.id,
+            createdBy: user.id,
+            updatedBy: user.id,
             name,
             icon,
             type
@@ -45,8 +46,8 @@ export async function DeleteCategory(form: DeleteCategorySchemaType) {
 
     return await prisma.category.delete({
         where: {
-            name_userId_type: {
-                userId: user.id,
+            name_createdBy_type: {
+                createdBy: user.id,
                 name: parsedBody.data.name,
                 type: parsedBody.data.type,
             }

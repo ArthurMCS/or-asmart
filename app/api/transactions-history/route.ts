@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { GetFormatterForCurrency } from "@/lib/helpers";
 
-export async function GET(request: Request){
+export async function GET(request: Request) {
     const user = await currentUser();
 
     if (!user) {
@@ -15,18 +15,15 @@ export async function GET(request: Request){
     const from = searchParams.get('from')
     const to = searchParams.get('to')
 
-    const queryParams = OverviewQuerySchema.safeParse({from, to})
+    const queryParams = OverviewQuerySchema.safeParse({ from, to })
 
-    if(!queryParams.success) {
+    if (!queryParams.success) {
         return Response.json(queryParams.error.message, {
             status: 400,
         })
     }
 
-
     const transactions = await getTransactionsHistory(user.id, queryParams.data.from, queryParams.data.to)
-
-    console.log("transactions", transactions)
 
     return Response.json(transactions)
 }
@@ -36,11 +33,11 @@ export type GettRansactionHistoryResponseType = Awaited<ReturnType<typeof getTra
 async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
     const userSettings = await prisma.userSettings.findUnique({
         where: {
-            userId,
+            id: userId,
         }
     })
 
-    if(!userSettings){
+    if (!userSettings) {
         throw new Error("user settings not found")
     }
 
@@ -49,10 +46,18 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date,) {
 
     const transactions = await prisma.transaction.findMany({
         where: {
-            userId,
+            createdBy: userId,
             date: {
                 gte: from,
                 lte: to,
+            },
+        },
+        include: {
+            category: true,  // Isso incluirá o objeto `Category`
+            responsibles: {
+                include: {
+                    responsible: true,  // Isso incluirá o objeto `Responsible`
+                },
             },
         },
         orderBy: {
